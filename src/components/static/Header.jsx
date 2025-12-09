@@ -19,8 +19,6 @@ const Header = () => {
     state => state.user.cart || [{ id: 1, name: "Tee", price: 89 }]
   );
 
-  console.log(userData.profilePicture);
-
   const searchInputRef = useRef(null);
 
   const handleCartToggle = () => setCartDropdownOpen(!cartDropdownOpen);

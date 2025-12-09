@@ -14,7 +14,6 @@ import hoodieImage5 from "../assets/public/minimalist-hoodie.jpg";
 import jacketImage from "../assets/public/jacket.jpg";
 import jacketImage1 from "../assets/public/leather-jacket.jpg";
 
-// --- ENRICHED PRODUCT DATA ---
 const products = [
   {
     id: 1,
@@ -76,7 +75,6 @@ const products = [
     colors: [{ hex: "#000000", name: "Black" }],
     sizes: ["S", "M", "L"],
   },
-  // ... (Other products follow the structure)
 ];
 
 const categories = [
@@ -87,9 +85,7 @@ const categories = [
   "Outerwear",
   "Accessories",
   "Footwear",
-]; // Filtered categories list
-
-// --- PRODUCT MODAL COMPONENT ---
+];
 
 const ProductModal = ({ product, onClose }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -105,7 +101,6 @@ const ProductModal = ({ product, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="bg-gray-900 text-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300">
-        {/* Modal Header */}
         <div className="sticky top-0 p-4 flex justify-end bg-gray-900 z-10 border-b border-gray-800">
           <button
             onClick={onClose}
@@ -114,9 +109,7 @@ const ProductModal = ({ product, onClose }) => {
           </button>
         </div>
 
-        {/* Modal Content Grid */}
         <div className="grid md:grid-cols-2 gap-8 p-8">
-          {/* Left: Image Gallery */}
           <div>
             <img
               src={product.image}
@@ -125,7 +118,6 @@ const ProductModal = ({ product, onClose }) => {
             />
           </div>
 
-          {/* Right: Details and Actions */}
           <div>
             <h2 className="text-4xl font-black uppercase mb-2">
               {product.name}
@@ -136,7 +128,6 @@ const ProductModal = ({ product, onClose }) => {
 
             <p className="text-white/80 mb-6">{product.description}</p>
 
-            {/* Color Selector */}
             <div className="mb-6">
               <p className="text-sm font-semibold mb-2 uppercase tracking-wider">
                 Color:{" "}
@@ -159,7 +150,6 @@ const ProductModal = ({ product, onClose }) => {
               </div>
             </div>
 
-            {/* Size Selector */}
             <div className="mb-8">
               <p className="text-sm font-semibold mb-2 uppercase tracking-wider">
                 Size: <span className="text-purple-400">{selectedSize}</span>
@@ -180,7 +170,6 @@ const ProductModal = ({ product, onClose }) => {
               </div>
             </div>
 
-            {/* Quantity and Actions */}
             <div className="flex items-center space-x-4 mb-8">
               <div className="flex items-center border border-gray-700 rounded-lg">
                 <button
@@ -224,8 +213,6 @@ const ProductModal = ({ product, onClose }) => {
   );
 };
 
-// --- PRODUCT LISTING COMPONENT ---
-
 export function Product() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -236,7 +223,6 @@ export function Product() {
       ? products
       : products.filter(p => p.category === selectedCategory);
 
-  // purple color variables for consistency
   const purple_400 = "text-purple-400";
   const purple_500 = "bg-purple-500";
   const purple_600_HOVER = "hover:bg-purple-600";
@@ -287,8 +273,7 @@ export function Product() {
                   <div
                     key={product.id}
                     className="group cursor-pointer"
-                    onClick={() => openModal(product)} // OPEN MODAL ON CARD CLICK
-                  >
+                    onClick={() => openModal(product)}>
                     <div className="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 bg-black/10 border border-white/10">
                       <img
                         src={product.image || "/placeholder.svg"}
