@@ -1,31 +1,25 @@
 import React, { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import * as Yup from "yup";
-import toast from "react-hot-toast";
-import axios from "axios";
-import { Flex, Spin } from "antd";
-import { LuLoaderCircle } from "react-icons/lu";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LiaOpencart } from "react-icons/lia";
 
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
-    profilePicture: null,
     fullName: "",
-    age: "",
     email: "",
     phoneNumber: "",
     password: "",
   });
 
   const handleChange = e => {
-    const { name, files, value } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: files ? files[0] : value,
+      [name]: value,
     });
   };
 
@@ -33,180 +27,162 @@ const Register = () => {
     setShowPassword(prev => !prev);
   };
 
-  const validationSchema = Yup.object({
-    fullName: Yup.string().required("Full Name is Required"),
-    age: Yup.number()
-      .min(18, "You must be above 18")
-      .max(40, "You are over aged")
-      .required("Age is required"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    phoneNumber: Yup.string()
-      .min(11, "Phone number is not complete")
-      .required("Phone number is required"),
-    password: Yup.string().required("Password is required"),
-    profilePicture: Yup.mixed().required("Please add your image"),
-  });
-
-  const API_BASE_URL = "https://product-api-mrbb.onrender.com";
-  const validateForm = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await validationSchema.validate(formData, { abortEarly: false });
-      const response = await axios.post(`${API_BASE_URL}/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      toast.success("Registration successful!");
-      setLoading(false);
-      navigate("/login");
-      console.log(response.data);
-    } catch (error) {
-      if (error.name === "ValidationError") {
-        console.log(error.inner);
-        toast.error("Validation errors:", error.inner);
-        setLoading(false);
-      } else {
-        toast.error("API error:", error.response?.data || error.message);
-        setLoading(false);
-      }
-    }
+    console.log("Form Data Submitted:", formData);
+    navigate("/login");
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-r from-purple-500 to-purple-400 flex justify-center items-center">
-      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 sm:p-8">
-        <h2 className="text-2xl font-bold mb-8 text-gray-800 text-center">
-          Create Your Account
-        </h2>
-        <div className="flex flex-col items-center mb-4">
-          <label
-            htmlFor="profileImage"
-            className="cursor-pointer relative w-24 h-24 rounded-full overflow-hidden border-2 border-purple-500 flex items-center justify-center bg-gray-50 hover:border-indigo-500">
-            {formData.profilePicture ? (
-              <img src={URL.createObjectURL(formData.profilePicture)} alt="" />
-            ) : (
-              <span className="text-gray-400 text-sm">Upload</span>
-            )}
-            <input
-              id="profileImage"
-              type="file"
-              accept="image/*"
-              name="profilePicture"
-              onChange={handleChange}
-              className="hidden"
-            />
-          </label>
-          <p className="text-xs text-gray-500 mt-2">Upload profile picture</p>
+    <div className="h-screen w-full bg-black flex justify-center items-center p-4">
+      <header className="p-6 absolute top-0 left-0 z-10">
+        <div className="flex items-center space-x-2 text-purple-400">
+          <LiaOpencart className="w-6 h-6" />
+          <h1 className="text-xl font-bold tracking-wider">Aroura</h1>
+        </div>
+      </header>
+      <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-3xl shadow-2xl py-6 sm:py-4 px-8 hover:shadow-purple-500/50 transition-shadow">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-extrabold mb-8 text-white text-center">
+            Register
+          </h2>
         </div>
 
-        <div className="w-full space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                placeholder="Enter your Name"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Age
-              </label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={handleChange}
-                placeholder="Enter your Age"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="w-full space-y-5">
+          <div className="relative">
+            <input
+              id="fullName"
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder=" "
+              className={`block w-full px-4 py-3 text-white bg-gray-900 border-2 border-gray-600 rounded-lg appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500 peer
+                         transition-colors duration-200 focus:bg-gray-800`}
+            />
+            <label
+              htmlFor="fullName"
+              className={`absolute text-sm text-gray-400 duration-200 transform z-10 origin-[0] bg-gray-900 px-2 
+                          peer-focus:px-2 peer-focus:text-purple-500 peer-focus:dark:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 
+                          peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 
+                          ${
+                            formData.fullName.length > 0
+                              ? "scale-75 -translate-y-4 top-2 bg-gray-900"
+                              : "top-1/2 -translate-y-1/2"
+                          }`}>
+              Full Name
+            </label>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                placeholder="Enter your phone"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-              />
-            </div>
+          <div className="relative">
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder=" "
+              className={`block w-full px-4 py-3 text-white bg-gray-900 border-2 border-gray-600 rounded-lg appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500 peer
+                         transition-colors duration-200 focus:bg-gray-800`}
+            />
+            <label
+              htmlFor="email"
+              className={`absolute text-sm text-gray-400 duration-200 transform z-10 origin-[0] bg-gray-900 px-2 
+                          peer-focus:px-2 peer-focus:text-purple-500 peer-focus:dark:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 
+                          peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 
+                          ${
+                            formData.email.length > 0
+                              ? "scale-75 -translate-y-4 top-2 bg-gray-900"
+                              : "top-1/2 -translate-y-1/2"
+                          }`}>
+              Email Address
+            </label>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+          <div className="relative">
+            <input
+              id="phoneNumber"
+              type="tel"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              placeholder=" "
+              className={`block w-full px-4 py-3 text-white bg-gray-900 border-2 border-gray-600 rounded-lg appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500 peer
+                         transition-colors duration-200 focus:bg-gray-800`}
+            />
+            <label
+              htmlFor="phoneNumber"
+              className={`absolute text-sm text-gray-400 duration-200 transform z-10 origin-[0] bg-gray-900 px-2 
+                          peer-focus:px-2 peer-focus:text-purple-500 peer-focus:dark:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 
+                          peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 
+                          ${
+                            formData.phoneNumber.length > 0
+                              ? "scale-75 -translate-y-4 top-2 bg-gray-900"
+                              : "top-1/2 -translate-y-1/2"
+                          }`}>
+              Phone Number
+            </label>
+          </div>
+
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder=" "
+              className={`block w-full px-4 py-3 text-white bg-gray-900 border-2 border-gray-600 rounded-lg appearance-none focus:outline-none focus:ring-purple-500 focus:border-purple-500 peer pr-12
+                         transition-colors duration-200 focus:bg-gray-800`}
+            />
+            <label
+              htmlFor="password"
+              className={`absolute text-sm text-gray-400 duration-200 transform z-10 origin-[0] bg-gray-900 px-2 
+                          peer-focus:px-2 peer-focus:text-purple-500 peer-focus:dark:text-purple-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 
+                          peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 
+                          ${
+                            formData.password.length > 0
+                              ? "scale-75 -translate-y-4 top-2 bg-gray-900"
+                              : "top-1/2 -translate-y-1/2"
+                          }`}>
               Password
             </label>
-            <div className="relative mt-1">
-              <input
-                type={showPassword ? "password" : "text"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter a strong password"
-                className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm pr-10"
-              />
-              <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer">
-                {showPassword ? (
-                  <FaRegEye onClick={handleShowPass} />
-                ) : (
-                  <FaRegEyeSlash onClick={handleShowPass} />
-                )}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={handleShowPass}
+              aria-label={showPassword ? "Hide Password" : "Show Password"}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white z-20 focus:outline-none transition-colors">
+              {showPassword ? (
+                <FaRegEye className="w-5 h-5" />
+              ) : (
+                <FaRegEyeSlash className="w-5 h-5" />
+              )}
+            </button>
           </div>
-
           <button
-            onClick={validateForm}
-            className="w-full mt-6 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-base font-semibold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200 ease-in-out">
+            type="submit"
+            disabled={loading}
+            className="w-full mt-8 flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.01]">
             {loading ? (
-              <Flex align="center" gap="middle">
-                <Spin
-                  indicator={
-                    <LoadingOutlined
-                      style={{ fontSize: 25, color: "black" }}
-                      spin
-                    />
-                  }
-                />
-                Registering...
-              </Flex>
+              <div className="flex items-center space-x-2">
+                <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                <span>Registering...</span>
+              </div>
             ) : (
-              "Register"
+              "Create Account"
             )}
           </button>
-        </div>
+
+          <p className="text-center text-gray-400 text-sm pt-2">
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              className="text-purple-400 hover:text-purple-300 font-semibold cursor-pointer transition-colors">
+              Login
+            </span>
+          </p>
+        </form>
       </div>
     </div>
   );

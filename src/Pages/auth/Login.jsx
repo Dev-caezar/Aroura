@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, User } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setUserData, setUserToken } from "../../utils/Features";
-
-const LOGIN_API_URL = "https://product-api-mrbb.onrender.com/login";
+import { LoginUser } from "../../api/apiMutation";
+import { useUserStore } from "../../utils/userStore";
+import { Flex, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { LiaOpencart } from "react-icons/lia";
 
 const ErrorDisplay = ({ message }) => {
   return message ? (
-    <p className="mt-1 text-xs text-red-500 font-medium">{message}</p>
+    <div className="mb-4 px-3 py-2 bg-red-100 border border-red-400 rounded-md text-red-700 shadow-sm">
+      <p className="mt-1 text-xs text-red-500 font-medium">{message}</p>
+    </div>
   ) : null;
 };
 
@@ -34,7 +36,7 @@ const validateForm = formData => {
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { setUser, setToken } = useUserStore.getState();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -66,7 +68,6 @@ const Login = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      console.error("Validation Errors:", validationErrors);
       return;
     }
 
@@ -74,16 +75,19 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const loginResponse = await axios.post(LOGIN_API_URL, formData);
+      const loginResponse = await LoginUser(formData);
       console.log("Login successful! Response:", loginResponse);
-      dispatch(setUserData(loginResponse.data.data));
-      dispatch(setUserToken(loginResponse.data.token));
-
+      setUser(loginResponse.data.data);
+      setToken(loginResponse.data.token);
       navigate("/");
     } catch (error) {
-      console.error("API Error:", error.message);
+      console.error(
+        "API Error:",
+        error.response?.data?.message || error.message
+      );
       setApiError(
-        error.message || "An unexpected error occurred during login."
+        error.response?.data?.message ||
+          "Login failed. Please check your credentials."
       );
     } finally {
       setIsLoading(false);
@@ -94,18 +98,23 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const getInputClass = fieldName =>
+    errors[fieldName]
+      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+      : "border-gray-600 focus:ring-purple-500 focus:border-purple-500";
+
   return (
-    <div className="w-full h-screen bg-linear-to-br from-purple-500 to-indigo-700 flex flex-col font-sans">
+    <div className="w-full h-screen bg-black flex flex-col font-sans">
       <header className="p-6 absolute top-0 left-0 z-10">
-        <div className="flex items-center space-x-2 text-white">
-          <User className="w-6 h-6" />
-          <h1 className="text-xl font-bold tracking-wider">AppBrand</h1>
+        <div className="flex items-center space-x-2 text-purple-400">
+          <LiaOpencart className="w-6 h-6" />
+          <h1 className="text-xl font-bold tracking-wider">Aroura</h1>
         </div>
       </header>
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 mx-4 transition duration-500 hover:shadow-3xl">
-          <h2 className="text-3xl font-extrabold mb-8 text-gray-800 text-center">
+        <div className="w-full max-w-md bg-gray-900 rounded-3xl shadow-2xl p-8 mx-4 transition duration-500 hover:shadow-xl hover:shadow-purple-900/50">
+          <h2 className="text-3xl font-extrabold mb-8 text-white text-center">
             Welcome Back
           </h2>
 
@@ -115,7 +124,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-700">
+                className="block text-sm font-semibold text-gray-300">
                 Email Address
               </label>
               <input
@@ -125,9 +134,9 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email address"
-                className={`mt-1 block w-full px-4 py-2.5 border ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                } rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base transition`}
+                className={`mt-1 block w-full px-4 py-2.5 border rounded-lg shadow-sm focus:outline-none text-base transition bg-gray-800 text-white placeholder-gray-500 ${getInputClass(
+                  "email"
+                )}`}
               />
               <ErrorDisplay message={errors.email} />
             </div>
@@ -135,7 +144,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-700">
+                className="block text-sm font-semibold text-gray-300">
                 Password
               </label>
               <div className="relative mt-1">
@@ -146,12 +155,12 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className={`block w-full px-4 py-2.5 border ${
-                    errors.password ? "border-red-500" : "border-gray-300"
-                  } rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base pr-10 transition`}
+                  className={`block w-full px-4 py-2.5 border rounded-lg shadow-sm focus:outline-none text-base pr-10 transition bg-gray-800 text-white placeholder-gray-500 ${getInputClass(
+                    "password"
+                  )}`}
                 />
                 <span
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer hover:text-purple-600 transition"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer hover:text-purple-400 transition"
                   onClick={togglePasswordVisibility}>
                   {showPassword ? (
                     <Eye className="w-5 h-5" />
@@ -163,7 +172,7 @@ const Login = () => {
               <ErrorDisplay message={errors.password} />
               <div className="text-right mt-1">
                 <span
-                  className="text-xs text-purple-600 hover:text-purple-700 cursor-pointer font-medium"
+                  className="text-xs text-purple-400 hover:text-purple-300 cursor-pointer font-medium"
                   onClick={() => navigate("/forgot-password")}>
                   Forgot Password?
                 </span>
@@ -179,33 +188,27 @@ const Login = () => {
                   : "bg-purple-600 hover:bg-purple-700 transform hover:scale-[1.01]"
               }`}>
               {isLoading ? (
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <Flex align="center" gap="middle">
+                  <Spin
+                    indicator={
+                      <LoadingOutlined
+                        style={{ fontSize: 25, color: "white" }}
+                        spin
+                      />
+                    }
+                  />
+                  Logging in...
+                </Flex>
               ) : (
                 "Log In"
               )}
             </button>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 text-center text-sm text-gray-600">
+            <div className="mt-6 pt-4 border-t border-gray-700 text-center text-sm text-gray-400">
               Don't have an account yet?
               <span
-                className="text-purple-600 font-medium hover:text-purple-700 ml-1 cursor-pointer hover:underline"
-                onClick={() => navigate("/")}>
+                className="text-purple-400 font-medium hover:text-purple-300 ml-1 cursor-pointer hover:underline"
+                onClick={() => navigate("/register")}>
                 Sign Up
               </span>
             </div>

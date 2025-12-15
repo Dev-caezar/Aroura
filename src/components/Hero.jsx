@@ -1,7 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-// 1. Container Variants (Subtle Fade and Scale)
 const containerVariants = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: {
@@ -9,14 +8,13 @@ const containerVariants = {
     scale: 1,
     transition: {
       duration: 0.8,
-      ease: [0.4, 0, 0.2, 1], // Standard fast cubic-bezier for responsive feel
+      ease: [0.4, 0, 0.2, 1],
       staggerChildren: 0.1,
       delayChildren: 0.3,
     },
   },
 };
 
-// 2. Child Variants (Reveal Effect)
 const revealVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -35,14 +33,12 @@ export default function Hero() {
       <div className="absolute inset-0 bg-black/50 h-full w-full" />
       <div className="max-w-7xl w-full relative z-10 flex items-center h-full">
         <div className="max-w-2xl mx-auto">
-          {/* Apply the container variants to the main content block */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="space-y-8">
             <div className="space-y-4 flex justify-center items-center flex-col">
-              {/* 1. Badge - Apply reveal variant */}
               <motion.div
                 variants={revealVariants}
                 className="inline-flex items-center gap-2 px-3 py-1 bg-purple-400/10 border border-purple-400/30 rounded-full">
@@ -52,14 +48,12 @@ export default function Hero() {
                 </p>
               </motion.div>
 
-              {/* 2. Headline - Apply reveal variant */}
               <motion.h1
                 variants={revealVariants}
                 className="text-6xl md:text-6xl lg:text-7xl font-black leading-18 text-balance uppercase text-white text-center">
                 Craft Your <span className="text-purple-400">Future</span>
               </motion.h1>
 
-              {/* 3. Subtext - Apply reveal variant */}
               <motion.p
                 variants={revealVariants}
                 className="text-lg text-white/90 leading-relaxed max-w-lg font-medium text-center mx-auto">

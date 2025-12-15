@@ -184,7 +184,6 @@
     width: 100%;
     height: auto;
     padding-bottom: 20px;
-    /* Add some space below image grid */
   }
 }
 
@@ -194,4 +193,16 @@
 
 .productImg {
   background-image: url("./assets/public/heroImage.jpg");
+}
+.authImg {
+  background-image: url("./assets/public/authImg.jpg");
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

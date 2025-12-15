@@ -11,6 +11,7 @@ import ResetPassword from "../Pages/auth/ResetPassword";
 import Login from "../Pages/auth/Login";
 import Checkout from "../Pages/Checkout";
 import ProductPage from "../Pages/ProductPage";
+import Wishlist from "../Pages/Wishlist";
 
 export const Element = createBrowserRouter([
   {
